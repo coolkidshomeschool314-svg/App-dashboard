@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App dashboard! Download all my apps!</title>
+    <style>
+        :root {
+            --bg-color: #0a0f1d;
+            --panel-bg: rgba(16, 24, 48, 0.4);
+            --card-bg: rgba(22, 34, 68, 0.6);
+            --neon-cyan: #00f3ff;
+            --neon-purple: #b026ff;
+            --text-main: #e2e8f0;
+            --text-dim: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            transition: all 0.2s ease;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(176, 38, 255, 0.1) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(0, 243, 255, 0.08) 0px, transparent 50%),
+                linear-gradient(rgba(18, 24, 41, 0.5) 2px, transparent 2px),
+                linear-gradient(90deg, rgba(18, 24, 41, 0.5) 2px, transparent 2px);
+            background-size: 100% 100%, 100% 100%, 30px 30px, 30px 30px;
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 30px 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, var(--neon-cyan), #ffffff, var(--neon-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(0, 243, 255, 0.2);
+            margin-bottom: 10px;
+        }
+
+        .system-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 243, 255, 0.05);
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-family: monospace;
+            color: var(--neon-cyan);
+        }
+
+        .status-dot { 
+  width: 8px; 
+  height: 8px; 
+  background-color: var(--neon-cyan); 
+  border-radius: 50%; 
+  box-shadow: 0 0 10px var(--neon-cyan); 
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(0, 242, 254, 0.7);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 10px rgba(0, 242, 254, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(0, 242, 254, 0);
+  }
+}
+
+
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .terminal-panel {
+            background: var(--panel-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            width: 100%;
+        }
+
+        .terminal-panel.mobile-sector { border-top: 3px solid var(--neon-cyan); }
+        .terminal-panel.desktop-sector { border-top: 3px solid var(--neon-purple); }
+
+        .terminal-panel h2 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .mobile-sector h2 { color: var(--neon-cyan); }
+        .desktop-sector h2 { color: var(--neon-purple); }
+
+        .app-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .app-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            padding: 16px 20px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .app-card:hover {
+            transform: translateY(-2px);
+            background: rgba(30, 45, 85, 0.5);
+        }
+        
+        .mobile-sector .app-card:hover { border-color: rgba(0, 243, 255, 0.4); box-shadow: 0 5px 15px rgba(0, 243, 255, 0.1); }
+        .desktop-sector .app-card:hover { border-color: rgba(176, 38, 255, 0.4); box-shadow: 0 5px 15px rgba(176, 38, 255, 0.1); }
+
+        .app-meta {
+            flex: 1;
+            padding-right: 15px;
+        }
+
+        .app-title-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+
+        .app-card h3 {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .app-card p {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            line-height: 1.4;
+        }
+
+        .cyber-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 18px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-decoration: none;
+            border-radius: 6px;
+            white-space: nowrap;
+            cursor: pointer;
+            background: transparent;
+        }
+
+        .btn-cyan {
+            color: var(--neon-cyan);
+            border: 1px solid var(--neon-cyan);
+        }
+        .btn-cyan:hover {
+            background: var(--neon-cyan);
+            color: var(--bg-color);
+            box-shadow: 0 0 15px var(--neon-cyan);
+        }
+
+        .btn-purple {
+            color: var(--neon-purple);
+            border: 1px solid var(--neon-purple);
+        }
+        .btn-purple:hover {
+            background: var(--neon-purple);
+            color: #ffffff;
+            box-shadow: 0 0 15px var(--neon-purple);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>App Installation/Deployment Hub</h1>
+        <div class="system-status">
+            <span class="status-dot"></span>
+            <span>SECURE DOWNLOAD SHIELD: ACTIVE</span>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+        <!-- 📱 SECTOR 01: MOBILE ARCHITECTURE -->
+        <div class="terminal-panel mobile-sector">
+            <h2>📱 Android Deployment Sector</h2>
+            <div class="app-grid">
+                
+                <div class="app-card">
+                    <div class="app-meta">
+                        <div class="app-title-wrapper">
+                            <span>🧩</span>
+                            <h3>Sudoku Master</h3>
+                        </div>
+                        <p>Play classic sudoku 9x9 puzzles directly on your portable touch matrix.</p>
+                    </div>
+                    <a href="mobile/sudoku.apk" class="cyber-btn btn-cyan">Deploy APK</a>
+                </div>
+
+                <div class="app-card">
+                    <div class="app-meta">
+                        <div class="app-title-wrapper">
+                            <span>▪️◾⬛</span>
+                            <h3>QR Generator</h3>
+                        </div>
+                        <p>Compile input strings into working 2D barcodes, then send it to your friends with the SMS button.</p>
+                    </div>
+                    <a href="mobile/qrgenerator.apk" class="cyber-btn btn-cyan">Deploy APK</a>
+                </div>
+
+                <div class="app-card">
+                    <div class="app-meta">
+                        <div class="app-title-wrapper">
+                            <span>🤖</span>
+                            <h3>Copel Mobile</h3>
+                        </div>
+                        <p>Mobile version of Copel(see computer apps).</p>
+                    </div>
+                    <a href="mobile/copel.apk" class="cyber-btn btn-cyan">Deploy APK</a>
+                </div>
+
+
+                <div class="app-card">
+                    <div class="app-meta">
+                        <div class="app-title-wrapper">
+                            <span>🔢</span>
+                            <h3>Pi Finder</h3>
+                        </div>
+                        <p>Execute sequence lookups across massive multi-million digit string indexes of pi.</p>
+                    </div>
+                    <a href="mobile/pifinder.apk" class="cyber-btn btn-cyan">Deploy APK</a>
+                </div>
+
+                <div class="app-card">
+                    <div class="app-meta">
+                        <div class="app-title-wrapper">
+                            <span>🔐</span>
+                            <h3>ASCII En/Decoder</h3>
+                        </div>
+                        <p>Convert raw text directly into decimal numeric strings instantly (Completely revirsible).</p>
+                    </div>
+                    <a href="mobile/decoder.apk" class="cyber-btn btn-cyan">Deploy APK</a>
+                </div>
+			</div>
+        	</div>
+        <!-- 💻 SECTOR 02: WINDOWS ARCHITECTURE -->
+        <div class="terminal-panel desktop-sector">
+            <h2>💻 Windows Deployment Sector (32-bit only)</h2>
+            <div class="app-grid">
+
+                <!-- ASCII En/Decoder -->
+                <div class="app-card">
+                    <div class="app-meta">
+                        <div class="app-title-wrapper">
+                            <span>🔐</span>
+                            <h3>ASCII En/Decoder</h3>
+                        </div>
+                        <p>The android version is back for those of you who prefer computer apps.</p>
+                    </div>
+                    <a href="desktop/decoder_setup.exe" class="cyber-btn btn-purple">Download EXE</a>
+                </div>
+
+
+		<!-- Cyber Saftey Hub-->
+                <div class="app-card">
+                    <div class="app-meta">
+                        <div class="app-title-wrapper">
+                            <span>🫆</span>
+                            <h3>Cyber Saftey Hub</h3>
+                        </div>
+                        <p>Cyber saftey education software.</p>
+                    </div>
+                    <a href="desktop/Cyber Saftey Hub.exe" class="cyber-btn btn-purple">Download EXE</a>
+                </div>
+
+
+
+                <!-- Copel System Module -->
+                <div class="app-card">
+                    <div class="app-meta">
+                        <div class="app-title-wrapper">
+                            <span>🤖</span>
+                            <h3>Copel</h3>
+                        </div>
+                        <p>AI searching agent working with the entire Longman Dictionary.</p>
+                    </div>
+                    <a href="computer/copel_setup.exe" class="cyber-btn btn-purple">Download EXE</a>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
