@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Download my apps">
+    <title>App Deployment Hub</title>
+    <style>
+:root {
+    --bg: #0a0f1d;
+    --panel: rgba(16, 24, 48, .55);
+    --card: rgba(22, 34, 68, .65);
+    --cyan: #00f3ff;
+    --purple: #b026ff;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --ease: 180ms ease;
+}
+
+* { box-sizing: border-box; }
+
+html { color-scheme: dark; }
+
+body {
+    min-height: 100vh;
+    margin: 0;
+    padding: clamp(1.5rem, 4vw, 3rem) 1rem;
+    color: var(--text);
+    font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg);
+    background-image:
+        radial-gradient(circle at 0 0, rgba(176, 38, 255, .12), transparent 45%),
+        radial-gradient(circle at 100% 100%, rgba(0, 243, 255, .1), transparent 45%),
+        linear-gradient(rgba(18, 24, 41, .5) 2px, transparent 2px),
+        linear-gradient(90deg, rgba(18, 24, 41, .5) 2px, transparent 2px);
+    background-size: 100% 100%, 100% 100%, 30px 30px, 30px 30px;
+}
+
+.site-header { margin: 0 auto 2.5rem; text-align: center; }
+
+.site-header h1 {
+    max-width: 1000px;
+    margin: 0 auto .75rem;
+    color: #fff;
+    font-size: clamp(1.6rem, 4vw, 2.5rem);
+    font-weight: 800;
+    letter-spacing: clamp(1px, 1vw, 4px);
+    text-transform: uppercase;
+    background: linear-gradient(135deg, var(--cyan), #fff, var(--purple));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.system-status {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    padding: .4rem 1rem;
+    border: 1px solid rgba(0, 243, 255, .2);
+    border-radius: 999px;
+    color: var(--cyan);
+    font: .85rem monospace;
+    text-transform: uppercase;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--cyan);
+    box-shadow: 0 0 10px var(--cyan);
+    animation: pulse 2s infinite;
+}
+
+.dashboard-container {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+    width: min(1400px, 100%);
+    margin: 0 auto;
+}
+
+.terminal-panel {
+    width: 100%;
+    padding: clamp(1rem, 3vw, 1.5rem);
+    border: 1px solid rgba(255, 255, 255, .06);
+    border-top: 3px solid;
+    border-radius: 20px;
+    background: var(--panel);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, .4);
+    backdrop-filter: blur(16px);
+}
+
+.mobile-sector { border-top-color: var(--cyan); }
+.desktop-sector { border-top-color: var(--purple); }
+
+.terminal-panel h2 {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    margin: 0 0 1.25rem;
+    font-size: 1.3rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.terminal-panel h2 span { font-size: .7em; }
+.mobile-sector h2 { color: var(--cyan); }
+.desktop-sector h2 { color: var(--purple); }
+
+.app-grid { display: grid; gap: .9rem; }
+
+.app-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    border: 1px solid rgba(255, 255, 255, .04);
+    border-radius: 12px;
+    background: var(--card);
+    transition: transform var(--ease), background var(--ease), border-color var(--ease), box-shadow var(--ease);
+}
+
+.app-card:hover { transform: translateY(-2px); background: rgba(30, 45, 85, .6); }
+.mobile-sector .app-card:hover { border-color: rgba(0, 243, 255, .4); box-shadow: 0 5px 15px rgba(0, 243, 255, .1); }
+.desktop-sector .app-card:hover { border-color: rgba(176, 38, 255, .4); box-shadow: 0 5px 15px rgba(176, 38, 255, .1); }
+
+.app-meta { min-width: 0; }
+.app-card h3 { margin: 0 0 .25rem; color: #fff; font-size: 1.05rem; }
+.app-card p { margin: 0; color: var(--muted); font-size: .85rem; line-height: 1.4; }
+
+.cyber-btn {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.25rem;
+    padding: .5rem 1.1rem;
+    border: 1px solid currentColor;
+    border-radius: 6px;
+    color: inherit;
+    font-size: .8rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-decoration: none;
+    text-transform: uppercase;
+    white-space: nowrap;
+    transition: background var(--ease), color var(--ease), box-shadow var(--ease);
+}
+
+.btn-cyan { color: var(--cyan); }
+.btn-cyan:hover, .btn-cyan:focus-visible { color: var(--bg); background: var(--cyan); box-shadow: 0 0 15px var(--cyan); }
+.btn-purple { color: var(--purple); }
+.btn-purple:hover, .btn-purple:focus-visible { color: #fff; background: var(--purple); box-shadow: 0 0 15px var(--purple); }
+
+.cyber-btn:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+
+@keyframes pulse {
+    70% { box-shadow: 0 0 0 10px rgba(0, 243, 255, 0); }
+}
+
+@media (max-width: 800px) {
+    .dashboard-container { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+    .app-card { align-items: stretch; flex-direction: column; }
+    .cyber-btn { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <h1>App Installation&Deployment Hub</h1>
+        <p class="system-status" role="status">
+            <span class="status-dot" aria-hidden="true"></span>
+            	Status: Active
+        </p>
+    </header>
+
+    <main class="dashboard-container">
+        <section class="terminal-panel mobile-sector" aria-labelledby="android-heading">
+            <h2 id="android-heading">📱 Android Deployment Sector</h2>
+            <div class="app-grid">
+                <article class="app-card">
+                    <div class="app-meta">
+                        <h3><span aria-hidden="true">🧩</span> Sudoku Master</h3>
+                        <p>Play classic 9x9 Sudoku puzzles on your phone.</p>
+                    </div>
+                    <a href="https://drive.usercontent.google.com/download?id=1fX5mo_IrGrYR9HCGRMdCoTfwGeQGvlpO&export=download&authuser=0" class="cyber-btn btn-cyan" download>Download APK</a>
+                </article>
+
+                <article class="app-card">
+                    <div class="app-meta">
+                        <h3><span aria-hidden="true">▪️◾⬛</span> QR Generator</h3>
+                        <p>Compile input strings into working 2D barcodes and send them to friends by SMS.</p>
+                    </div>
+                    <a href="https://drive.usercontent.google.com/download?id=1K7LF08NBLw-57Udab9Thx84ZtkGJyc4S&export=download&authuser=0" class="cyber-btn btn-cyan" download>Download APK</a>
+                </article>
+
+                <article class="app-card">
+                    <div class="app-meta">
+                        <h3><span aria-hidden="true">🤖</span> Copel Mobile</h3>
+                        <p>AI searching agent powered by the Longman Dictionary.</p>
+                    </div>
+                    <a href=""https://drive.usercontent.google.com/download?id=1EfPrzcweNNt6rxEf7q_tmmGNRqTBg_yF&export=download&authuser=0" class="cyber-btn btn-cyan" download>Download APK</a>
+                </article>
+
+                <article class="app-card">
+                    <div class="app-meta">
+                        <h3><span aria-hidden="true">🔢</span> Pi Finder</h3>
+                        <p>Search massive digit indexes of pi for numeric sequences.</p>
+                    </div>
+                    <a href="https://drive.usercontent.google.com/download?id=1eayFxAEP5eVgX_DGZEE4tb-Wms5nYtoz&export=download&authuser=0" class="cyber-btn btn-cyan" download>Download APK</a>
+                </article>
+
+                <article class="app-card">
+                    <div class="app-meta">
+                        <h3><span aria-hidden="true">🔐</span> ASCII En/Decoder</h3>
+                        <p>Convert text into decimal numeric strings and decode it back again to send hidden messages.</p>
+                    </div>
+                    <a href="https://drive.usercontent.google.com/download?id=1FKApD3KJc_OFdz2Wo4iTFCclYFR9Du1b&export=download&authuser=0" class="cyber-btn btn-cyan" download>Download APK</a>
+                </article>
+            </div>
+        </section>
+
+        <section class="terminal-panel desktop-sector" aria-labelledby="windows-heading">
+            <h2 id="windows-heading">💻 Windows Deployment Sector <span>(32-bit only)</span></h2>
+            <div class="app-grid">
+                <article class="app-card">
+                    <div class="app-meta">
+                        <h3><span aria-hidden="true">🔐</span> ASCII En/Decoder</h3>
+                        <p>Convert text into decimal numeric strings and decode it back again to send hidden messages.</p>
+                    </div>
+                    <a href="https://drive.usercontent.google.com/download?id=1sHEmQ70o0t_Ne83MchJRa_UFyvY0x100&export=download&authuser=0" class="cyber-btn btn-purple" download>Download EXE</a>
+                </article>
+
+                <article class="app-card">
+                    <div class="app-meta">
+                        <h3><span aria-hidden="true">🛡️</span> Cyber Safety Hub</h3>
+                        <p>Cyber safety education software.</p>
+                    </div>
+                    <a href="https://drive.usercontent.google.com/download?id=16Nmkfl7R2UofR1HmNPsChF7pU9InJgVV&export=download&authuser=0" class="cyber-btn btn-purple" download>Download EXE</a>
+                </article>
+
+                <article class="app-card">
+                    <div class="app-meta">
+                        <h3><span aria-hidden="true">🤖</span> Copel</h3>
+                        <p>AI searching agent powered by the Longman Dictionary.</p>
+                    </div>
+                    <a href="https://drive.usercontent.google.com/download?id=1Fdm-T6bR9GxZ-WInQ8CQK0ZfqHQqxXQv&export=download&authuser=0" class="cyber-btn btn-purple" download>Download EXE</a>
+                </article>
+            </div>
+        </section>
+    </main>
+</body>
+</html>
